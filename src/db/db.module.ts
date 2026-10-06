@@ -6,9 +6,11 @@ import { ConfigService } from "@nestjs/config";
 
 export const DRIZZLE = Symbol('DRIZZLE');
 
+export type Database = ReturnType<typeof createDb>;
+
 function createDb(url: string){
     const client = postgres(url);
-    return drizzle(client, {schema})
+    return drizzle(client, { schema })
 }
 
 @Global()
@@ -16,10 +18,12 @@ function createDb(url: string){
     providers: [
         {
             provide: DRIZZLE,
-            useFactory: (config: ConfigService) => createDb(config.getOrThrow<string>('DATABASE_URL')),
+            useFactory: (config: ConfigService) =>
+                 createDb(config.getOrThrow<string>('DATABASE_URL')),
             inject: [ConfigService]
         }
-    ]
+    ],
+    exports:[DRIZZLE]
 })
 
 export class DbModule{}
