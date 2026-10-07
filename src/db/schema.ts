@@ -1,5 +1,6 @@
 import { jsonb, timestamp } from "drizzle-orm/pg-core";
 import { text } from "drizzle-orm/pg-core";
+import { primaryKey } from "drizzle-orm/pg-core";
 import { pgEnum } from "drizzle-orm/pg-core";
 import { numeric } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
@@ -28,3 +29,11 @@ export const outbox = pgTable('outbox', {
 export type Order = typeof orders.$inferSelect;
 export type OutboxEvent = typeof outbox.$inferSelect;
 export type NewOutboxEvent = typeof outbox.$inferInsert;
+
+export const processedEvents = pgTable('processed_events', {
+    eventId: uuid('event_id').notNull(),
+    consumer: text('consumer').notNull(),
+    processedAt: timestamp('processed_at').notNull().defaultNow(),
+},
+(t) => [primaryKey({ columns: [t.eventId, t.consumer]})],
+)
