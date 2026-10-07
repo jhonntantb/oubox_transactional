@@ -3,14 +3,21 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { DbModule } from './db/db.module';
-import { OrdersController } from './orders/orders.controller';
 import { OrdersModule } from './orders/orders.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { PulsarModule } from './pulsar/pulsar.module';
+import { ConsumersModule } from './consumers/consumers.module';
+import { OutboxModule } from './outbox/outbox.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal : true}),
+    ScheduleModule.forRoot(),
+    OutboxModule,
     DbModule,
-    OrdersModule
+    OrdersModule,
+    ConsumersModule,
+    PulsarModule,
   ],
   controllers: [],
   providers: [

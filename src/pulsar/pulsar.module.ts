@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import Pulsar from 'pulsar-client';
 
 export const PULSAR_CLIENT = Symbol('PULSAR_CLIENT');
+
 @Global()
 @Module({
     providers: [
@@ -12,6 +13,7 @@ export const PULSAR_CLIENT = Symbol('PULSAR_CLIENT');
                 new Pulsar.Client({
                     serviceUrl: config.getOrThrow<string>('PULSAR_URL'),
                 }),
+            inject: [ConfigService]
         },
     ],
     exports: [PULSAR_CLIENT],
